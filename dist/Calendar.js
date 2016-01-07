@@ -9,6 +9,14 @@ var Utils = require('./Utils');
 
 var _keyDownActions = Utils.keyDownActions;
 
+const todayTr = {
+  nl: "Vandaag",
+  fr: "Aujourd'hui",
+  pl: "Dzisiaj",
+  de: "Heute",
+  en: "Today",
+};
+
 function toDate(date) {
   if (date instanceof Date) {
     return date;
@@ -30,6 +38,7 @@ module.exports = React.createClass({displayName: "exports",
         onBlur: React.PropTypes.func,
         onChange: React.PropTypes.func,
         placeholder: React.PropTypes.string,
+        locale: React.PropTypes.string,
         hideTouchKeyboard: React.PropTypes.bool,
     },
 
@@ -235,11 +244,17 @@ module.exports = React.createClass({displayName: "exports",
     },
 
     render: function () {
-
         // its ok for this.state.date to be null, but we should never
         // pass null for the date into the calendar pop up, as we want
         // it to just start on todays date if there is no date set
         var calendarDate = this.state.date || moment();
+        var locale
+        if (this.props.locale) {
+          locale = this.props.locale
+          moment.locale(locale)
+        } else {
+          locale = moment.locale();
+        }
 
         var view;
         switch (this.state.currentView) {
@@ -269,10 +284,7 @@ module.exports = React.createClass({displayName: "exports",
                     prevView: this.prevView});
                 break;
         }
-
-        var todayText = 'Today';
-        if(moment.locale() === 'de')
-          todayText = 'Heute';
+        const todayText = todayTr[locale] || todayTr.en;
 
         var calendar = !this.state.isVisible ? '' :
             React.createElement("div", {className: "input-calendar-wrapper", onClick: this.calendarClick}, 
@@ -283,7 +295,6 @@ module.exports = React.createClass({displayName: "exports",
                   todayText
                 )
             );
-
         var iconClass = cs({
             'fa': true,
             'fa-calendar': !this.state.isVisible,
