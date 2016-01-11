@@ -74,6 +74,7 @@ module.exports = React.createClass({
 	},
 
 	cellClick: function (e) {
+		e.preventDefault();
 		var cell = e.target,
 			date = parseInt(cell.innerHTML, 10),
 			newDate = this.props.date ? this.props.date.clone() : moment();
