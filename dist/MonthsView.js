@@ -41,6 +41,7 @@ module.exports = React.createClass({displayName: "exports",
     },
 
     cellClick: function (e) {
+        e.preventDefault();
         var month = e.target.innerHTML;
         var date = this.props.date.clone().month(month);
 

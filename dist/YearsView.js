@@ -76,6 +76,7 @@ module.exports = React.createClass({displayName: "exports",
     },
 
     cellClick: function (e) {
+        e.preventDefault();
         var year = parseInt(e.target.innerHTML, 10);
         var date = this.props.date.clone().year(year);
 
