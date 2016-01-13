@@ -151,8 +151,14 @@ module.exports = React.createClass({
     },
 
     changeDate: function (e) {
+        const input = e.target.value
+        const format = this.state.format;
+        const date = moment(input, format, true);
+        
         this.setState({
-            inputValue: e.target.value
+            date: date.isValid() ? date : undefined,
+            inputValue: e.target.value,
+            isVisible: date.isValid()
         })
     },
 
