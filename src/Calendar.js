@@ -8,6 +8,13 @@ import MonthsView from './month-view'
 import YearsView from './year-view'
 import Util from './util'
 
+const todayTr = {
+  nl: "Vandaag",
+  fr: "Aujourd'hui",
+  pl: "Dzisiaj",
+  de: "Heute",
+  en: "Today",
+};
 
 module.exports = React.createClass({
 
@@ -24,12 +31,13 @@ module.exports = React.createClass({
         onBlur: React.PropTypes.func,
         onChange: React.PropTypes.func,
         placeholder: React.PropTypes.string,
+        locale: React.PropTypes.string,
         hideTouchKeyboard: React.PropTypes.bool,
         hideIcon: React.PropTypes.bool
     },
 
     getInitialState: function() {
-        let date = this.props.date ? moment(Util.toDate(this.props.date)) : null,
+        let date = this.props.date ? moment(Util.toDate(this.props.date)) : moment(),
             minDate = this.props.minDate ? moment(Util.toDate(this.props.minDate)) : null,
             maxDate = this.props.maxDate ? moment(Util.toDate(this.props.maxDate)) : null,
             inputFieldId = this.props.inputFieldId ? this.props.inputFieldId : null,
@@ -129,7 +137,15 @@ module.exports = React.createClass({
     },
 
     changeDate: function (e) {
-      this.setState({ inputValue: e.target.value })
+        const input = e.target.value
+        const format = this.state.format;
+        const date = moment(input, format, true);
+
+        this.setState({
+            date: date.isValid() ? date : undefined,
+            inputValue: e.target.value,
+            isVisible: date.isValid()
+        })
     },
 
     inputBlur: function (e) {
@@ -219,7 +235,15 @@ module.exports = React.createClass({
         // its ok for this.state.date to be null, but we should never
         // pass null for the date into the calendar pop up, as we want
         // it to just start on todays date if there is no date set
-        let calendarDate = this.state.date || moment(), view
+        let calendarDate = this.state.date || moment();
+        let locale
+        let view
+        if (this.props.locale) {
+          locale = this.props.locale
+          moment.locale(locale)
+        } else {
+          locale = moment.locale();
+        }
 
         switch (this.state.currentView) {
             case 0:
@@ -248,8 +272,8 @@ module.exports = React.createClass({
                 break
         }
 
-        let todayText = moment.locale() === 'de' ? 'Heute' : 'Today',
-          calendarClass = cs({
+        const todayText = todayTr[locale] || todayTr.en
+        const calendarClass = cs({
             'input-calendar-wrapper': true,
             'icon-hidden': this.props.hideIcon
           })
@@ -298,6 +322,15 @@ module.exports = React.createClass({
                 type="text"
                 value={this.state.inputValue}
                 />
+              {this.state.inputValue &&
+                  <div className="input-calendar-clear"
+                      onClick={() => {
+                          this.inputBlur({target: {value: null}});
+                      }}
+                  >
+                      &times;
+                  </div>
+              }
               {calendarIcon}
               {calendar}
             </div>
