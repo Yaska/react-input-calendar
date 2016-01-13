@@ -9,7 +9,7 @@ var Utils = require('./Utils');
 
 var _keyDownActions = Utils.keyDownActions;
 
-const todayTr = {
+var todayTr = {
   nl: "Vandaag",
   fr: "Aujourd'hui",
   pl: "Dzisiaj",
@@ -151,10 +151,10 @@ module.exports = React.createClass({
     },
 
     changeDate: function (e) {
-        const input = e.target.value
-        const format = this.state.format;
-        const date = moment(input, format, true);
-        
+        var input = e.target.value
+        var format = this.state.format;
+        var date = moment(input, format, true);
+
         this.setState({
             date: date.isValid() ? date : undefined,
             inputValue: e.target.value,
@@ -290,7 +290,7 @@ module.exports = React.createClass({
                     prevView={this.prevView} />;
                 break;
         }
-        const todayText = todayTr[locale] || todayTr.en;
+        var todayText = todayTr[locale] || todayTr.en;
 
         var calendar = !this.state.isVisible ? '' :
             <div className="input-calendar-wrapper" onClick={this.calendarClick}>
