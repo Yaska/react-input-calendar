@@ -37,7 +37,7 @@ module.exports = React.createClass({
     },
 
     getInitialState: function() {
-        let date = this.props.date ? moment(Util.toDate(this.props.date)) : moment(),
+        let date = this.props.date ? moment(Util.toDate(this.props.date)) : null,
             minDate = this.props.minDate ? moment(Util.toDate(this.props.minDate)) : null,
             maxDate = this.props.maxDate ? moment(Util.toDate(this.props.maxDate)) : null,
             inputFieldId = this.props.inputFieldId ? this.props.inputFieldId : null,
@@ -80,6 +80,7 @@ module.exports = React.createClass({
     },
 
     checkIfDateDisabled: function (date) {
+        if (!date) { return false }
         if (this.state.minDate && date.isBefore(this.state.minDate)) {
             return true
         }
